@@ -5,16 +5,21 @@ function App() {
   const [books, setBooks] = useState<Book[]>([]);
   const [pageSize, setPageSize] = useState(5);
   const [pageNum, setPageNum] = useState(1);
-  const [sortBy, setSortBy] = useState("title");
+  const [sortBy, setSortBy] = useState(""); // ✅ start with no sorting
 
   useEffect(() => {
     fetchBooks();
   }, [pageSize, pageNum, sortBy]);
 
   const fetchBooks = async () => {
-    const res = await fetch(
-      `http://localhost:5000/api/books?pageSize=${pageSize}&pageNum=${pageNum}&sortBy=${sortBy}`
-    );
+    let url = `http://localhost:5000/api/books?pageSize=${pageSize}&pageNum=${pageNum}`;
+
+    // ✅ only include sort if selected
+    if (sortBy) {
+      url += `&sortBy=${sortBy}`;
+    }
+
+    const res = await fetch(url);
     const data = await res.json();
     setBooks(data);
   };
@@ -48,8 +53,12 @@ function App() {
             className="form-select ms-2"
             style={{ width: "120px", display: "inline-block" }}
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setPageNum(1); // ✅ reset page when sorting changes
+            }}
           >
+            <option value="">None</option> {/* ✅ new option */}
             <option value="title">Title</option>
           </select>
         </div>
