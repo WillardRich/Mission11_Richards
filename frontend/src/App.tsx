@@ -1,106 +1,60 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
+import HomePage from "./pages/HomePage";
+import CartPage from "./pages/CartPage";
 import type { Book } from "./types/Book";
+import { CartProvider } from "./context/CartContext";
 
 function App() {
   const [books, setBooks] = useState<Book[]>([]);
   const [pageSize, setPageSize] = useState(5);
   const [pageNum, setPageNum] = useState(1);
-  const [sortBy, setSortBy] = useState(""); // ✅ start with no sorting
-
-  useEffect(() => {
-    fetchBooks();
-  }, [pageSize, pageNum, sortBy]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const fetchBooks = async () => {
     let url = `http://localhost:5000/api/books?pageSize=${pageSize}&pageNum=${pageNum}`;
 
-    // ✅ only include sort if selected
-    if (sortBy) {
-      url += `&sortBy=${sortBy}`;
+    if (selectedCategories.length > 0) {
+      url += `&categories=${selectedCategories.join(",")}`;
     }
 
-    const res = await fetch(url);
-    const data = await res.json();
-    setBooks(data);
+    console.log("FETCHING:", url); // 🔥 debug
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      setBooks(data);
+    } catch (err) {
+      console.error("Error:", err);
+    }
   };
 
+  useEffect(() => {
+    fetchBooks();
+  }, [pageSize, pageNum, selectedCategories]);
+
   return (
-    <div className="container">
-      <h1 className="mt-4 mb-4">📚 Bookstore</h1>
-
-      {/* Controls */}
-      <div className="d-flex align-items-center mb-3">
-        <div>
-          <label>Results per page:</label>
-          <select
-            className="form-select ms-2"
-            style={{ width: "100px", display: "inline-block" }}
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-              setPageNum(1); // reset page
-            }}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-          </select>
-        </div>
-
-        <div className="ms-4">
-          <label>Sort by:</label>
-          <select
-            className="form-select ms-2"
-            style={{ width: "120px", display: "inline-block" }}
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setPageNum(1); // ✅ reset page when sorting changes
-            }}
-          >
-            <option value="">None</option> {/* ✅ new option */}
-            <option value="title">Title</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Book Cards */}
-      {books.map((b) => (
-        <div className="card mb-3 shadow-sm" key={b.bookID}>
-          <div className="card-body">
-            <h4 className="card-title">{b.title}</h4>
-            <p className="card-text">
-              <strong>Author:</strong> {b.author}
-            </p>
-            <p><strong>Publisher:</strong> {b.publisher}</p>
-            <p><strong>ISBN:</strong> {b.isbn}</p>
-            <p><strong>Category:</strong> {b.category}</p>
-            <p><strong>Pages:</strong> {b.pageCount}</p>
-            <p><strong>Price:</strong> ${b.price}</p>
-          </div>
-        </div>
-      ))}
-
-      {/* Pagination */}
-      <div className="d-flex justify-content-between mt-3">
-        <button
-          className="btn btn-secondary"
-          onClick={() => setPageNum((prev) => Math.max(prev - 1, 1))}
-          disabled={pageNum === 1}
-        >
-          ⬅ Previous
-        </button>
-
-        <span>Page {pageNum}</span>
-
-        <button
-          className="btn btn-secondary"
-          onClick={() => setPageNum((prev) => prev + 1)}
-        >
-          Next ➡
-        </button>
-      </div>
-    </div>
+    <CartProvider>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <HomePage
+                books={books}
+                pageSize={pageSize}
+                setPageSize={setPageSize}
+                pageNum={pageNum}
+                setPageNum={setPageNum}
+                selectedCategories={selectedCategories}
+                setSelectedCategories={setSelectedCategories}
+              />
+            }
+          />
+          <Route path="/cart" element={<CartPage />} />
+        </Routes>
+      </Router>
+    </CartProvider>
   );
 }
 
