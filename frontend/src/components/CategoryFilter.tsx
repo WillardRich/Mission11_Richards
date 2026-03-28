@@ -1,46 +1,51 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 function CategoryFilter({
-  selectedCategories,
-  setSelectedCategories,
+  selectedCategory,
+  setSelectedCategory,
 }: {
-  selectedCategories: string[];
-  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
 }) {
   const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/books/category")
-      .then((res) => res.json())
-      .then((data) => setCategories(data))
-      .catch((err) => console.error(err));
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          'https://localhost:5000/api/books/categories'
+        );
+        const data = await response.json();
+        console.log('Fetched categories:', data);
+        setCategories(data);
+      } catch (error) {
+        console.error('Error fetching categories', error);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
-  const handleChange = (value: string) => {
-    const updated = selectedCategories.includes(value)
-      ? selectedCategories.filter((c) => c !== value)
-      : [...selectedCategories, value];
-
-    console.log("Selected:", updated); // 🔥 DEBUG
-
-    setSelectedCategories(updated);
-  };
+  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    setSelectedCategory(e.target.value);
+  }
 
   return (
-    <div>
-      <h5>Categories</h5>
+    <div className="category-filter">
+      <h5>Filter by Category</h5>
 
-      {categories.map((c) => (
-        <div key={c}>
-          <input
-            type="checkbox"
-            value={c}
-            checked={selectedCategories.includes(c)}
-            onChange={() => handleChange(c)}
-          />
-          <label className="ms-2">{c}</label>
-        </div>
-      ))}
+      <select
+        className="form-select"
+        value={selectedCategory}
+        onChange={handleChange}
+      >
+        <option value="">All Categories</option>
+        {categories.map((c) => (
+          <option key={c} value={c}>
+            {c}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
