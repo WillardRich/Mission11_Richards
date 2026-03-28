@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Book } from '../types/Book';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import './BookList.css';
 
 function ProjectList({
   selectedCategory,
@@ -20,8 +21,8 @@ function ProjectList({
   useEffect(() => {
     const fetchProjects = async () => {
       const response = await fetch(
-        `http://localhost:5000/api/books?pageSize=${pageSize}&pageNum=${pageNum}${
-          selectedCategory ? `&category=${encodeURIComponent(selectedCategory)}` : ''
+        `https://localhost:5001/api/books?pageSize=${pageSize}&pageNum=${pageNum}${
+          selectedCategory ? `&categories=${encodeURIComponent(selectedCategory)}` : ''
         }`
     
       );
@@ -47,7 +48,7 @@ function ProjectList({
       <div className="row">
         {projects.map((p) => (
           <div className="col-md-4 mb-3" key={p.bookID}>
-            <div className="card h-100">
+            <div className="card h-100 card-hover border-0 shadow-sm">
               <div className="card-body">
                 <h5 className="card-title">{p.title}</h5>
 
