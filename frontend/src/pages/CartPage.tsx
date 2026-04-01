@@ -57,7 +57,7 @@ function CartPage() {
 
         <button
           className="btn btn-secondary"
-          onClick={() => navigate('/projects')}
+          onClick={() => navigate('/books')}
         >
           Continue Shopping
         </button>

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
 function CategoryFilter({
-  selectedCategory,
-  setSelectedCategory,
+  selectedCategories,
+  setSelectedCategories,
 }: {
-  selectedCategory: string;
-  setSelectedCategory: (category: string) => void;
+  selectedCategories: string[];
+  setSelectedCategories: (categories: string[]) => void;
 }) {
   const [categories, setCategories] = useState<string[]>([]);
 
@@ -26,26 +26,43 @@ function CategoryFilter({
     fetchCategories();
   }, []);
 
-  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    setSelectedCategory(e.target.value);
+  function handleToggle(category: string) {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(
+        selectedCategories.filter((c) => c !== category)
+      );
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
   }
 
   return (
     <div className="category-filter">
       <h5>Filter by Category</h5>
 
-      <select
-        className="form-select"
-        value={selectedCategory}
-        onChange={handleChange}
+      {/* Clear Filters Button */}
+      <button
+        className="btn btn-sm btn-outline-secondary mb-2"
+        onClick={() => setSelectedCategories([])}
       >
-        <option value="">All Categories</option>
-        {categories.map((c) => (
-          <option key={c} value={c}>
+        Clear Filters
+      </button>
+
+      {/* Checkbox List */}
+      {categories.map((c) => (
+        <div key={c} className="form-check">
+          <input
+            type="checkbox"
+            className="form-check-input"
+            id={c}
+            checked={selectedCategories.includes(c)}
+            onChange={() => handleToggle(c)}
+          />
+          <label className="form-check-label" htmlFor={c}>
             {c}
-          </option>
-        ))}
-      </select>
+          </label>
+        </div>
+      ))}
     </div>
   );
 }

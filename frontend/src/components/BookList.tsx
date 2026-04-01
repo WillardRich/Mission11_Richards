@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import './BookList.css';
 
-function ProjectList({
-  selectedCategory,
+function BookList({
+  selectedCategories,
 }: {
-  selectedCategory: string;
+  selectedCategories: string[];
 }) {
-  const [projects, setProjects] = useState<Book[]>([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [pageSize, setPageSize] = useState<number>(10);
   const [pageNum, setPageNum] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -19,34 +19,37 @@ function ProjectList({
   const { addToCart } = useCart();
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      const response = await fetch(
-        `https://localhost:5001/api/books?pageSize=${pageSize}&pageNum=${pageNum}${
-          selectedCategory ? `&categories=${encodeURIComponent(selectedCategory)}` : ''
-        }`
-    
-      );
+    const fetchBooks = async () => {
+        const categoryParams = selectedCategories
+        .map((cat) => `categories=${encodeURIComponent(cat)}`)
+        .join('&');
+  
+    const response = await fetch(
+    `https://localhost:5001/api/books?pageSize=${pageSize}&pageNum=${pageNum}${
+    selectedCategories.length ? `&${categoryParams}` : ''
+  }`
+);
 
       const data = await response.json();
       console.log("API DATA:", data);
 
-      setProjects(data.books);
+      setBooks(data.books);
       setTotalItems(data.totalNumBooks);
       setTotalPages(Math.ceil(data.totalNumBooks / pageSize));
     };
 
-    fetchProjects();
-  }, [pageSize, pageNum, selectedCategory]);
+    fetchBooks();
+  }, [pageSize, pageNum, selectedCategories]);
 
   // Reset page when category changes
   useEffect(() => {
     setPageNum(1);
-  }, [selectedCategory]);
+  }, [selectedCategories]);
 
   return (
     <>
       <div className="row">
-        {projects.map((p) => (
+        {books.map((p) => (
           <div className="col-md-4 mb-3" key={p.bookID}>
             <div className="card h-100 card-hover border-0 shadow-sm">
               <div className="card-body">
@@ -126,4 +129,4 @@ function ProjectList({
   );
 }
 
-export default ProjectList;
+export default BookList;

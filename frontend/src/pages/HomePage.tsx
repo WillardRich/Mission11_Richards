@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import CategoryFilter from '../components/CategoryFilter';
-import ProjectList from '../components/BookList';
+import BookList from '../components/BookList';
 import WelcomeBand from '../components/WelcomeBand';
 import CartSummary from '../components/CartSummary';
 
-function ProjectsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+function BooksPage() {
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   return (
     <div className="container mt-4">
@@ -19,18 +19,18 @@ function ProjectsPage() {
         {/* Sidebar filter */}
         <div className="col-md-3">
           <CategoryFilter
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
           />
         </div>
 
         {/* Main book list */}
         <div className="col-md-9">
-          <ProjectList selectedCategory={selectedCategory} />
+          <BookList selectedCategories={selectedCategories} />
         </div>
       </div>
     </div>
   );
 }
 
-export default ProjectsPage;
+export default BooksPage;

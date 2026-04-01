@@ -20,16 +20,23 @@ public class BooksController : ControllerBase
         int pageSize = 5,
         int pageNum = 1,
         string sortBy = "title",
-        string? categories = null
+        [FromQuery] List<string>? categories = null
     )
     {
         var query = _context.Books.AsQueryable();
 
-        // ✅ FILTER (supports multiple categories)
-        if (!string.IsNullOrEmpty(categories))
+        // ✅ FILTER (supports multiple formats)
+        if (categories != null && categories.Any())
         {
-            var categoryList = categories.Split(',');
-            query = query.Where(b => categoryList.Contains(b.Category));
+            // Handles both:
+            // categories=Fiction&categories=History
+            // AND categories=Fiction,History
+            var expandedCategories = categories
+                .SelectMany(c => c.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                .Select(c => c.Trim())
+                .ToList();
+
+            query = query.Where(b => expandedCategories.Contains(b.Category));
         }
 
         // ✅ SORT
