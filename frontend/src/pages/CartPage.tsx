@@ -17,23 +17,23 @@ function CartPage() {
           <ul className="list-group">
             {cart.map((item: CartItem) => (
               <li
-                key={item.project.bookID}
+                key={item.book.bookID}
                 className="list-group-item d-flex justify-content-between align-items-center"
               >
                 <div>
-                  <strong>{item.project.title}</strong>
-                  <div>Price: ${item.project.price.toFixed(2)}</div>
+                  <strong>{item.book.title}</strong>
+                  <div>Price: ${item.book.price.toFixed(2)}</div>
                   <div>Quantity: {item.quantity}</div>
                   <div>
                     Subtotal: $
-                    {(item.project.price * item.quantity).toFixed(2)}
+                    {(item.book.price * item.quantity).toFixed(2)}
                   </div>
                 </div>
 
                 <button
                   className="btn btn-danger"
                   onClick={() =>
-                    removeFromCart(item.project.bookID)
+                    removeFromCart(item.book.bookID)
                   }
                 >
                   Remove

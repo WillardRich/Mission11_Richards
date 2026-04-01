@@ -3,13 +3,13 @@ import type { ReactNode } from "react";
 import type { Book } from "../types/Book";
 
 export type CartItem = {
-  project: Book;
+  book: Book;
   quantity: number;
 };
 
 type CartContextType = {
   cart: CartItem[];
-  addToCart: (project: Book) => void;
+  addToCart: (book: Book) => void;
   removeFromCart: (id: number) => void;
   clearCart: () => void;
   getTotal: () => number;
@@ -22,28 +22,28 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
   // ✅ ADD TO CART
-  const addToCart = (project: Book) => {
+  const addToCart = (book: Book) => {
     setCart((prevCart) => {
       const existing = prevCart.find(
-        (item) => item.project.bookID === project.bookID
+        (item) => item.book.bookID === book.bookID
       );
 
       if (existing) {
         return prevCart.map((item) =>
-          item.project.bookID === project.bookID
+          item.book.bookID === book.bookID
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
 
-      return [...prevCart, { project, quantity: 1 }];
+      return [...prevCart, { book, quantity: 1 }];
     });
   };
 
   // ❌ REMOVE ITEM
   const removeFromCart = (id: number) => {
     setCart((prevCart) =>
-      prevCart.filter((item) => item.project.bookID !== id)
+      prevCart.filter((item) => item.book.bookID !== id)
     );
   };
 
@@ -55,7 +55,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   // 💰 TOTAL PRICE
   const getTotal = () => {
     return cart.reduce((total, item) => {
-      return total + item.project.price * item.quantity;
+      return total + item.book.price * item.quantity;
     }, 0);
   };
 

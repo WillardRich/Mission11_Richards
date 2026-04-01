@@ -1,6 +1,6 @@
 import type { Book } from "./Book";
 
 export interface CartItem {
-  project: Book;
+  book: Book;
   quantity: number;
 }
