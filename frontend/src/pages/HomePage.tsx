@@ -8,34 +8,47 @@ function BooksPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   return (
-    <div className="container py-4">
-      {/* Top bar */}
-      <div className="d-flex justify-content-end mb-3">
-        <CartSummary />
-      </div>
+    <div
+      style={{
+        backgroundColor: '#f5f7fa',
+        minHeight: '100vh',
+        padding: '40px 0',
+      }}
+    >
+      <div className="mx-auto" style={{ maxWidth: '1100px' }}>
 
-      {/* Header */}
-      <div className="mb-4">
-        <WelcomeBand />
-      </div>
+        {/* Top bar */}
+        <div className="d-flex justify-content-end mb-3">
+          <CartSummary />
+        </div>
 
-      <div className="row g-4">
-        {/* Sidebar filter */}
-        <div className="col-md-3">
-          <div className="p-3 bg-white border rounded shadow-sm">
-            <CategoryFilter
-              selectedCategories={selectedCategories}
-              setSelectedCategories={setSelectedCategories}
-            />
+        {/* Header */}
+        <div className="mb-4">
+          <WelcomeBand />
+        </div>
+
+        {/* Main content card */}
+        <div className="bg-white shadow rounded p-4">
+          <div className="row g-4">
+
+            {/* Sidebar */}
+            <div className="col-md-3">
+              <div className="p-3 border rounded bg-light h-100">
+                <CategoryFilter
+                  selectedCategories={selectedCategories}
+                  setSelectedCategories={setSelectedCategories}
+                />
+              </div>
+            </div>
+
+            {/* Book list */}
+            <div className="col-md-9">
+              <BookList selectedCategories={selectedCategories} />
+            </div>
+
           </div>
         </div>
 
-        {/* Main book list */}
-        <div className="col-md-9">
-          <div className="bg-white p-3 rounded shadow-sm">
-            <BookList selectedCategories={selectedCategories} />
-          </div>
-        </div>
       </div>
     </div>
   );

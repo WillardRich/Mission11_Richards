@@ -47,117 +47,123 @@ const AdminBooksPage = () => {
   if (error) return <p className="text-danger text-center">Error: {error}</p>;
 
   return (
-    <div className="container py-4">
-      {/* Header */}
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="fw-bold mb-0">Admin Books</h1>
+    <div style={{ backgroundColor: "#f5f7fa", minHeight: "100vh", padding: "40px 0" }}>
+      
+      <div className="mx-auto" style={{ maxWidth: "1100px" }}>
 
-        {!showForm && (
-          <button
-            className="btn btn-success"
-            onClick={() => setShowForm(true)}
-          >
-            + Add New Book
-          </button>
-        )}
-      </div>
+        <div className="bg-white shadow rounded p-4">
 
-      {/* New Book Form */}
-      {showForm && (
-        <div className="card shadow-sm p-3 mb-4">
-          <NewBookForm
-            onSuccess={() => {
-              setShowForm(false);
-              fetchBooks(pageSize, pageNum, []).then((data) =>
-                setBooks(data.books)
-              );
-            }}
-            onCancel={() => setShowForm(false)}
-          />
-        </div>
-      )}
+          {/* Header */}
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2 className="fw-bold mb-0">Admin Books</h2>
 
-      {/* Edit Book Form */}
-      {editingBook && (
-        <div className="card shadow-sm p-3 mb-4">
-          <EditBookForm
-            book={editingBook}
-            onSuccess={() => {
-              setEditingBook(null);
-              fetchBooks(pageSize, pageNum, []).then((data) =>
-                setBooks(data.books)
-              );
-            }}
-            onCancel={() => setEditingBook(null)}
-          />
-        </div>
-      )}
+            {!showForm && (
+              <button
+                className="btn btn-success"
+                onClick={() => setShowForm(true)}
+              >
+                + Add New Book
+              </button>
+            )}
+          </div>
 
-      {/* Table */}
-      <div className="card shadow-sm">
-        <div className="table-responsive">
-          <table className="table table-hover align-middle mb-0">
-            <thead className="table-light">
-              <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Publisher</th>
-                <th>ISBN</th>
-                <th>Classification</th>
-                <th>Category</th>
-                <th>Page Count</th>
-                <th>Price</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {books.map((book) => (
-                <tr key={book.bookID}>
-                  <td>{book.bookID}</td>
-                  <td>{book.title}</td>
-                  <td>{book.author}</td>
-                  <td>{book.publisher}</td>
-                  <td>{book.isbn}</td>
-                  <td>{book.classification}</td>
-                  <td>{book.category}</td>
-                  <td>{book.pageCount}</td>
-                  <td>${book.price.toFixed(2)}</td>
-                  <td>
-                    <div className="d-flex gap-2">
-                      <button
-                        onClick={() => setEditingBook(book)}
-                        className="btn btn-sm btn-primary"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(book.bookID)}
-                        className="btn btn-sm btn-danger"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
+          {/* New Book Form */}
+          {showForm && (
+            <div className="mb-4 p-3 border rounded bg-light">
+              <NewBookForm
+                onSuccess={() => {
+                  setShowForm(false);
+                  fetchBooks(pageSize, pageNum, []).then((data) =>
+                    setBooks(data.books)
+                  );
+                }}
+                onCancel={() => setShowForm(false)}
+              />
+            </div>
+          )}
+
+          {/* Edit Book Form */}
+          {editingBook && (
+            <div className="mb-4 p-3 border rounded bg-light">
+              <EditBookForm
+                book={editingBook}
+                onSuccess={() => {
+                  setEditingBook(null);
+                  fetchBooks(pageSize, pageNum, []).then((data) =>
+                    setBooks(data.books)
+                  );
+                }}
+                onCancel={() => setEditingBook(null)}
+              />
+            </div>
+          )}
+
+          {/* Table */}
+          <div className="table-responsive mb-4">
+            <table className="table table-hover align-middle">
+              <thead className="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Author</th>
+                  <th>Publisher</th>
+                  <th>ISBN</th>
+                  <th>Classification</th>
+                  <th>Category</th>
+                  <th>Page Count</th>
+                  <th>Price</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              </thead>
+              <tbody>
+                {books.map((book) => (
+                  <tr key={book.bookID}>
+                    <td>{book.bookID}</td>
+                    <td>{book.title}</td>
+                    <td>{book.author}</td>
+                    <td>{book.publisher}</td>
+                    <td>{book.isbn}</td>
+                    <td>{book.classification}</td>
+                    <td>{book.category}</td>
+                    <td>{book.pageCount}</td>
+                    <td>${book.price.toFixed(2)}</td>
+                    <td>
+                      <div className="d-flex gap-2">
+                        <button
+                          onClick={() => setEditingBook(book)}
+                          className="btn btn-sm btn-primary"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(book.bookID)}
+                          className="btn btn-sm btn-danger"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-      {/* Pagination */}
-      <div className="d-flex justify-content-between align-items-center mt-4">
-        <Pagination
-          currentPage={pageNum}
-          totalPages={totalPages}
-          pageSize={pageSize}
-          onPageChange={setPageNum}
-          onPageSizeChange={(newSize) => {
-            setPageSize(newSize);
-            setPageNum(1);
-          }}
-        />
+          {/* Pagination */}
+          <div className="d-flex justify-content-between align-items-center">
+            <Pagination
+              currentPage={pageNum}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              onPageChange={setPageNum}
+              onPageSizeChange={(newSize) => {
+                setPageSize(newSize);
+                setPageNum(1);
+              }}
+            />
+          </div>
+
+        </div>
       </div>
     </div>
   );
