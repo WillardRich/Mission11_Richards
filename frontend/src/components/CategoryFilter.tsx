@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+
 function CategoryFilter({
   selectedCategories,
   setSelectedCategories,
@@ -13,9 +14,10 @@ function CategoryFilter({
     const fetchCategories = async () => {
       try {
         const response = await fetch(
-          '"https://richardsbookstore-backend-dmhhe0hsdeg2eyf9.francecentral-01.azurewebsites.net/api/books/categories'
+          'https://richardsbookstore-backend-dmhhe0hsdeg2eyf9.francecentral-01.azurewebsites.net/api/books/categories'
         );
         const data = await response.json();
+        console.log("RAW RESPONSE:", data);
         console.log('Fetched categories:', data);
         setCategories(data);
       } catch (error) {
