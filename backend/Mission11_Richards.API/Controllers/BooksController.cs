@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mission11_Richards.Data;
+using Mission11_Richards.API.Models;
 
 namespace Mission11_Richards.API.Controllers;
 
@@ -73,5 +74,44 @@ public class BooksController : ControllerBase
             .ToList();
 
         return Ok(categories);
+    }
+    [HttpPost("Add")]
+    public IActionResult AddBook([FromBody] Book newBook)
+    {
+        _context.Books.Add(newBook);
+        _context.SaveChanges();
+        return Ok(newBook);
+    }
+    [HttpPut("Update/{bookId}")]
+    public IActionResult UpdateBook(int bookId, [FromBody] Book updatedBook)
+    {
+        var existingBook = _context.Books.Find(bookId);
+
+        existingBook.Title = updatedBook.Title;
+        existingBook.Author = updatedBook.Author;
+        existingBook.Category = updatedBook.Category;
+        existingBook.Price = updatedBook.Price;
+        existingBook.Publisher = updatedBook.Publisher;
+        existingBook.PageCount = updatedBook.PageCount;
+        existingBook.ISBN = updatedBook.ISBN;
+        existingBook.Classification = updatedBook.Classification;
+
+        _context.Books.Update(existingBook);
+        _context.SaveChanges();
+        return Ok(existingBook);
+    }
+    [HttpDelete("Delete/{bookId}")]
+    public IActionResult DeleteBook(int bookId)
+    {
+        var book = _context.Books.Find(bookId);
+
+        if(book == null)
+        {
+            return NotFound();
+        }
+        _context.Books.Remove(book);
+        _context.SaveChanges();
+        return NoContent();
+
     }
 }

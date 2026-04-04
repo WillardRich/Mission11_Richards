@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/3a804dba-fa74-4d64-ab0f-f588adcb5d42/resourceGroups/appsvc_windows_francecentral/providers/Microsoft.Web/sites/RichardsBookstore-Backend",
+    "appService.deploySubpath": "backend\\Mission11_Richards.API\\publish"
+}
